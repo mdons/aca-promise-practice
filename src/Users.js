@@ -3,21 +3,22 @@ import { Button, Card, Typography, CardContent } from "@material-ui/core";
 import { connect } from "react-redux";
 
 class Users extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: []
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     users: []
+  //   };
+  // }
 
   getUsers = () => {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        this.setState({
-          users: data
-        });
+        // this.setState({
+        //   users: data
+        // });
+        this.props.setUsers(data);
       });
   };
 
@@ -31,7 +32,7 @@ class Users extends Component {
           </Button>
         </div>
         <div className="users-block">
-          {this.state.users.map(user => (
+          {this.props.users.map(user => (
             <Card key={user.id}>
               <CardContent>
                 <Typography>name: {user.name}</Typography>
@@ -47,4 +48,23 @@ class Users extends Component {
   }
 }
 
-export default Users;
+function mapStateToProps(state) {
+  return {
+    users: state.users
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setUsers: usersArr =>
+      dispatch({
+        type: "SET_USERS",
+        value: usersArr
+      })
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Users);
